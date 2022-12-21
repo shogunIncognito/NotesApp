@@ -1,41 +1,47 @@
 import { useState, useContext } from 'react'
 import { AlertContext } from '../context/AlertContext'
 import { useFormik } from 'formik'
-import { schema } from '../schema/schema'
+import { notesSchema } from '../schema/schema'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createNote } from '../api/api'
 import { validateEmpty } from '../helpers/ValidateFields'
-import { inputs } from '../helpers/inputs';
+import { noteInputs } from '../helpers/inputs'; 
 import LoadingButton from '@mui/lab/LoadingButton'
 import { Grid, TextField, Paper, Alert } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 export default function FormNotes() {
     const [empty, setEmpty] = useState(false)    
     const { setAlert, setValues } = useContext(AlertContext)
 
     const queryClient = useQueryClient()
+    const navigate = useNavigate()
 
     const { mutate, isLoading } = useMutation({
         mutationFn: createNote,
-        onSuccess: (response) => {
-            setAlert(true)
-            setValues({ type: 'success', message: 'Note added successfully' })
-            queryClient.invalidateQueries('notes')
+        onSuccess: (response) => {            
+            setAlert(true)            
+            if (response.code === 201) {
+                setValues({ type: 'success', message: 'Note created' })
+                return queryClient.invalidateQueries('notes')
+            }
+            setValues({ type: 'error', message: 'Error creating note' })
         },
         onError: (error) => {
-            console.log(error)
+            setAlert(true)
+            setValues({ type: 'error', message: 'Expiro la sesion' })
+            navigate('/login')
         }
     })
 
     const formik = useFormik({
         initialValues: {
-            ...inputs.reduce((acc, curr) => ({ ...acc, [curr.name]: '' }), {})
+            ...noteInputs.reduce((acc, curr) => ({ ...acc, [curr.name]: '' }), {})
         },
-        validationSchema: schema,
+        validationSchema: notesSchema,
         onSubmit: values => {
             setEmpty(false)
             if (validateEmpty(values)) return setEmpty(true)
-
             
             mutate(values);        
             formik.resetForm();
@@ -46,9 +52,9 @@ export default function FormNotes() {
         <Paper component="form" onSubmit={formik.handleSubmit} sx={{ my: 5, p: 2 }}>
             <Grid container spacing={2}>
                 {
-                    inputs.map(input => {
+                    noteInputs.map(input => {
                         return (
-                            <Grid item xs={12} md={4} key={input.id}>
+                            <Grid item xs={12} md={6} key={input.id}>
                                 <TextField
                                     fullWidth
                                     label={input.label}

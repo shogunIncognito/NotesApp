@@ -1,6 +1,6 @@
-export function validateEmpty(values) {
+export function validateEmpty(values) {    
     for (const key in values) {
-        if (key != 'id') {
+        if (typeof values[key] === 'string') {
             if (values[key].trim() === '') return true
         }
     }

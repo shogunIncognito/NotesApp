@@ -1,15 +1,22 @@
-import Notes from './components/Notes'
-import FormNotes from './components/FormNotes'
 import Container from '@mui/material/Container'
 import SnackAlert from './components/SnackAlert'
+import Routes from './routes/AppRoutes'
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 function App() {
   return (
-    <Container maxWidth="lg">
-      <FormNotes />
-      <Notes />
-      <SnackAlert />
-    </Container>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+        <Routes />
+        <SnackAlert />
+    </ThemeProvider>
   )
 }
 

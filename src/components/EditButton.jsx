@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from 'react'
 import { useFormik } from 'formik';
-import { schema } from '../schema/schema';
+import { notesSchema } from '../schema/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateNote } from '../api/api';
 import { validateEmpty, validateSame } from '../helpers/ValidateFields';
-import { inputs } from '../helpers/inputs';
+import { noteInputs } from '../helpers/inputs';
 import { AlertContext } from '../context/AlertContext';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -62,9 +62,9 @@ export default function EditButton({ note }) {
 
     const formik = useFormik({
         initialValues: {
-            ...inputs.reduce((acc, curr) => ({ ...acc, [curr.name]: '' }), {})
+            ...noteInputs.reduce((acc, curr) => ({ ...acc, [curr.name]: '' }), {})
         },
-        validationSchema: schema,
+        validationSchema: notesSchema,
         onSubmit: values => {
             setWrite(false)
             setEmpty(false)
@@ -92,9 +92,9 @@ export default function EditButton({ note }) {
                 <Paper component="form" onSubmit={formik.handleSubmit} sx={style}>
                     <Grid container spacing={2} justifyContent="center">
                         {
-                            inputs.map(input => {
+                            noteInputs.map(input => {
                                 return (
-                                    <Grid item xs={12} md={4} key={input.id}>
+                                    <Grid item xs={12} md={6} key={input.id}>
                                         <TextField fullWidth
                                             label={input.label}
                                             name={input.name}
