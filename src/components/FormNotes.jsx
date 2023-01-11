@@ -4,14 +4,12 @@ import { useFormik } from 'formik'
 import { notesSchema } from '../schema/schema'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createNote } from '../api/api'
-import { validateEmpty } from '../helpers/ValidateFields'
 import { noteInputs } from '../helpers/inputs'; 
 import LoadingButton from '@mui/lab/LoadingButton'
 import { Grid, TextField, Paper, Alert } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
 export default function FormNotes() {
-    const [empty, setEmpty] = useState(false)    
     const { setAlert, setValues } = useContext(AlertContext)
 
     const queryClient = useQueryClient()
@@ -39,10 +37,7 @@ export default function FormNotes() {
             ...noteInputs.reduce((acc, curr) => ({ ...acc, [curr.name]: '' }), {})
         },
         validationSchema: notesSchema,
-        onSubmit: values => {
-            setEmpty(false)
-            if (validateEmpty(values)) return setEmpty(true)
-            
+        onSubmit: values => {                        
             mutate(values);        
             formik.resetForm();
         }
@@ -79,9 +74,7 @@ export default function FormNotes() {
                 loading={isLoading}
             >
                 Add
-            </LoadingButton>            
-            
-            {empty && <Alert sx={{ mt: 2 }} severity="error">¡Empty fields!</Alert>}
+            </LoadingButton>                                
         </Paper>
     )
 }

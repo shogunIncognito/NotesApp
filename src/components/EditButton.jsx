@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { notesSchema } from '../schema/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateNote } from '../api/api';
-import { validateEmpty, validateSame } from '../helpers/ValidateFields';
+import { validateSame } from '../helpers/ValidateFields';
 import { noteInputs } from '../helpers/inputs';
 import { AlertContext } from '../context/AlertContext';
 import Alert from '@mui/material/Alert';
@@ -26,8 +26,7 @@ const style = {
 };
 
 export default function EditButton({ note }) {
-    const [open, setOpen] = useState(false)
-    const [empty, setEmpty] = useState(false)
+    const [open, setOpen] = useState(false)    
     const [same, setSame] = useState(false)
     const [write, setWrite] = useState(false)
     const { setAlert, setValues } = useContext(AlertContext)
@@ -50,8 +49,7 @@ export default function EditButton({ note }) {
 
     const handleOpen = () => setOpen(true)
     const handleClose = () => {
-        setOpen(false)
-        setEmpty(false)
+        setOpen(false)        
         setSame(false)
         setWrite(false)
     }
@@ -66,11 +64,8 @@ export default function EditButton({ note }) {
         },
         validationSchema: notesSchema,
         onSubmit: values => {
-            setWrite(false)
-            setEmpty(false)
-            setSame(false)
-
-            if (validateEmpty(values)) return setEmpty(true)
+            setWrite(false)            
+            setSame(false)            
 
             if (validateSame(values, note)) return setSame(true)
 
@@ -126,8 +121,7 @@ export default function EditButton({ note }) {
                         >
                             Cancel
                         </Button>
-                    </Grid>
-                    {empty && <Alert sx={{ mt: 3 }} severity="error">¡Empty fields!</Alert>}
+                    </Grid>                    
                     {same && <Alert sx={{ mt: 3 }} severity="warning">¡The fields are the same!</Alert>}
                 </Paper>
             </Modal>
